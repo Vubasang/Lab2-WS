@@ -1,0 +1,21 @@
+version: "3.3"
+
+services:
+  app:
+    build: .
+    environment:
+      APP_CONFIG: production.cfg
+    ports:
+    - 5000:80
+    volumes:
+    - ./app:/app
+
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: app
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+    volumes:
+    - ./db:/var/lib/mysql
