@@ -50,7 +50,7 @@
                     <thead>
                     <tr>
                         <th scope="col">Номер заказа</th>
-                        <th scope="col">Ссылку на клиента</th>
+                        <th scope="col">Ссылка на клиента</th>
                         <th scope="col">Текстовое описание заказа</th>
                         <th scope="col">Адрес доставки</th>
                         <th scope="col">Стоимость заказа</th>
@@ -59,7 +59,7 @@
                     <tbody>
                     <tr v-for="order in orders">
                         <th scope="row">{{ order.number_order }}</th>
-                        <td>{{ order.link_to_client }}</td>
+                        <td>{{ order.client.id }}</td>
                         <td>{{ order.text_order_definition }}</td>
                         <td>{{ order.delivery_address }}</td>
                         <td>{{ order.cost_order }}</td>

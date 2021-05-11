@@ -11,7 +11,7 @@ from app.models import db, Client, Order, User
 #         user = User.query.filter_by(username=data['username']).first()
 #         if user and user.hash_verify(data['password']):
 #             token = ''  # TODO: create token
-#             return {
+#             return {client_id
 #                 'success': True,
 #                 'token': token
 #             }
@@ -38,10 +38,11 @@ class ClientResource(Resource):
     def put(self, client_id):
         data = request.get_json()
         client = Client.query.get(client_id)
-        client.title = data.get('type_client')
-        client.order = data.get('customer_name')
-        client.title = data.get('delivery_address')
-        client.title = data.get('comment')
+        client.type_client = data.get('type_client')
+        client.customer_name = data.get('customer_name')
+        client.delivery_address = data.get('delivery_address')
+        client.comment = data.get('comment')
+
         db.session.add(client)
         db.session.commit()
         return {'success': True}
@@ -60,7 +61,9 @@ class OrdersResource(Resource):
 
     def post(self):
         data = request.get_json()
-        db.session.add(Order(last_name=data['last_name'], first_name=data['first_name'], second_name=data['second_name']))
+        db.session.add(Order(number_order=data['number_order'], link_to_client=data['link_to_client'],
+                             text_order_definition=data['text_order_definition'], delivery_address=data['delivery_address'],
+                             cost_order=data['cost_order']))
         db.session.commit()
         return {'success': True}
 

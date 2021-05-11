@@ -9,26 +9,26 @@ db = SQLAlchemy()
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     number_order = db.Column(db.String(30), nullable=False)
-    link_to_client = db.Column(db.String(30), nullable=False)
+    #link_to_client = db.Column(db.String(30), nullable=False)
     text_order_definition = db.Column(db.String(30))
     delivery_address = db.Column(db.String(30))
     cost_order = db.Column(db.String(30))
 
-    # def __str__(self):
-    #     result = f'{self.last_name} {self.first_name:.1}.'
-    #     if self.second_name:
-    #         result += f'{self.second_name:.1}.'
-    #     return result
-    #
-    # def to_dict(self):
-    #     return {'id': self.id, 'last_name': self.last_name, 'first_name': self.first_name, 'second_name': self.second_name}
+    client = db.relationship('Client', backref='orders', lazy=True)
+    link_to_client = db.Column(db.Integer, db.ForeignKey('client.id'))
+
     def __str__(self):
         return self.number_order
 
-    def to_dict(self):
+    def to_dict_without_clients(self):
         return {'id': self.id, 'number_order': self.number_order, 'link_to_client': self.link_to_client,
                 'text_order_definition': self.text_order_definition, 'delivery_address': self.delivery_address,
                 'cost_order': self.cost_order}
+
+    def to_dict(self):
+        return {'id': self.id, 'number_order': self.number_order,'text_order_definition': self.text_order_definition,
+                'delivery_address': self.delivery_address, 'cost_order': self.cost_order,
+                'client': self.client.to_dict_without_orders()}
 
 
 class Client(db.Model):
@@ -41,9 +41,16 @@ class Client(db.Model):
     def __str__(self):
         return self.type_client
 
-    def to_dict(self):
+    def to_dict_without_orders(self):
         return {'id': self.id, 'type_client': self.type_client, 'customer_name': self.customer_name,
                 'delivery_address': self.delivery_address, 'comment': self.comment}
+
+    def to_dict(self):
+        orders = []
+        for s in self.orders:
+            orders.append(s.to_dict_without_clients())
+        return {'id': self.id, 'type_client': self.type_client, 'customer_name': self.customer_name,
+                'delivery_address': self.delivery_address, 'comment': self.comment, 'orders': orders}
 
 
 class User(db.Model):
